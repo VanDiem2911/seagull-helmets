@@ -1,9 +1,8 @@
 // NOTE: this file must only import 'mongoose' (no relative imports) so scripts/seed.ts can load it directly in Node.
 import mongoose from 'mongoose';
-import type { Model } from 'mongoose';
+import type { Model, Schema as MongooseSchema } from 'mongoose';
 
 const { Schema } = mongoose;
-type Schema = InstanceType<typeof mongoose.Schema>;
 
 const L10n = { vi: { type: String, required: true }, en: { type: String } };
 const L10nOpt = { vi: { type: String }, en: { type: String } };
@@ -142,7 +141,7 @@ const reviewSchema = new Schema(
   { timestamps: true },
 );
 
-function model<T>(name: string, schema: Schema): Model<T> {
+function model<T>(name: string, schema: MongooseSchema): Model<T> {
   return (mongoose.models[name] as Model<T>) || mongoose.model<T>(name, schema);
 }
 
