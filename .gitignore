@@ -1,0 +1,35 @@
+# dependencies
+node_modules
+
+# Next.js build output and generated files
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
+
+# environment variables (copy .env.example to .env.local and fill in real values)
+.env
+.env.local
+.env.*.local
+
+# local MongoDB data created by `npm run db:dev`
+.mongo-data
+
+# logs
+*.log
+npm-debug.log*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# deployment tooling
+.vercel
+coverage
