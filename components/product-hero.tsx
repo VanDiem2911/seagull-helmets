@@ -97,7 +97,7 @@ export function ProductHero({ product }: { product: Product }) {
         </ul>
         <div className="frame min-w-0 flex-1">
           <button type="button" onClick={() => setZoom(true)} className="frame-in relative block aspect-square w-full cursor-zoom-in bg-paper" aria-label={t.product.zoom}>
-            <Image key={current.src} src={current.src} alt={`${name} – ${current.kind === 'color' ? current.label : ''}`} fill loading="eager" sizes="(min-width:1024px) 50vw, 100vw" className={current.kind === 'color' ? 'object-contain mix-blend-multiply animate-fade' : 'object-cover animate-fade'} />
+            <Image key={current.src} src={current.src} alt={`${name} – ${current.kind === 'color' ? current.label : ''}`} fill loading="eager" fetchPriority="high" sizes="(min-width:1280px) 560px, (min-width:1024px) 50vw, (min-width:640px) calc(100vw - 130px), 100vw" className={current.kind === 'color' ? 'object-contain mix-blend-multiply animate-fade' : 'object-cover animate-fade'} />
             <span className="label absolute bottom-3 right-3 bg-paper/90 px-2 py-1 text-choc">{t.product.zoom} +</span>
           </button>
         </div>
@@ -181,7 +181,7 @@ export function ProductHero({ product }: { product: Product }) {
 
       <Modal open={zoom} onClose={() => setZoom(false)} title={name}>
         <div className="relative aspect-square bg-paper">
-          <Image src={current.src} alt={name} fill sizes="90vw" className={current.kind === 'color' ? 'object-contain mix-blend-multiply' : 'object-cover'} />
+          <Image src={current.src} alt={name} fill sizes="(min-width:600px) 34rem, 92vw" className={current.kind === 'color' ? 'object-contain mix-blend-multiply' : 'object-cover'} />
         </div>
       </Modal>
     </div>

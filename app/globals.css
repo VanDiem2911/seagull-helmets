@@ -39,8 +39,10 @@
 }
 
 @layer base {
-  html { scroll-behavior: smooth; }
+  /* `clip` (not `hidden`) so reveal animations that slide in from the side never create a horizontal scrollbar, and the sticky header keeps working */
+  html { scroll-behavior: smooth; overflow-x: clip; }
   body {
+    overflow-x: clip;
     background: var(--color-cream);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -129,20 +131,23 @@ body::after {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .29  0 0 0 0 .2  0 0 0 0 .15  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* scroll-reveal: elements start hidden only when JS is on (html.js); see components/motion.tsx */
+/* scroll-reveal: elements start hidden only when JS is on (html.js); see components/motion.tsx.
+   They hide again once off screen, so they play on the way down and on the way back up (.from-top = left through the top). */
 .js [data-reveal] {
   opacity: 0;
-  transform: translate3d(0, 34px, 0);
-  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 44px, 0);
+  transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1), transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
-.js [data-reveal='left'] { transform: translate3d(-56px, 0, 0); }
-.js [data-reveal='right'] { transform: translate3d(56px, 0, 0); }
-.js [data-reveal='zoom'] { transform: translate3d(0, 24px, 0) scale(0.94); }
+.js [data-reveal='left'] { transform: translate3d(-64px, 0, 0); }
+.js [data-reveal='right'] { transform: translate3d(64px, 0, 0); }
+.js [data-reveal='zoom'] { transform: translate3d(0, 28px, 0) scale(0.94); }
+.js [data-reveal].from-top:not([data-reveal='left']):not([data-reveal='right']) { transform: translate3d(0, -44px, 0); }
+.js [data-reveal='zoom'].from-top { transform: translate3d(0, -28px, 0) scale(0.94); }
 .js [data-reveal].is-in { opacity: 1; transform: none; }
-[data-reveal-stagger] > [data-reveal]:nth-child(4n + 2) { transition-delay: 0.1s; }
-[data-reveal-stagger] > [data-reveal]:nth-child(4n + 3) { transition-delay: 0.2s; }
-[data-reveal-stagger] > [data-reveal]:nth-child(4n + 4) { transition-delay: 0.3s; }
+[data-reveal-stagger] > [data-reveal]:nth-child(4n + 2) { transition-delay: 0.18s; }
+[data-reveal-stagger] > [data-reveal]:nth-child(4n + 3) { transition-delay: 0.36s; }
+[data-reveal-stagger] > [data-reveal]:nth-child(4n + 4) { transition-delay: 0.54s; }
 @media (prefers-reduced-motion: reduce) {
   .js [data-reveal] { opacity: 1; transform: none; transition: none; }
   .animate-hero { animation: none; }

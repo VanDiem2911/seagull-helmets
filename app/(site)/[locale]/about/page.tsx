@@ -21,7 +21,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <>
       <section>
         <div className="relative h-72 w-full bg-choc sm:h-96 lg:h-[34rem]">
-          <Image src="/images/hero-v2.webp" alt="" fill loading="eager" quality={90} sizes="100vw" className="object-cover object-[50%_60%]" />
+          <Image src="/images/hero-v2.webp" alt="" fill loading="eager" fetchPriority="high" quality={80} sizes="100vw" className="object-cover object-[50%_60%]" />
         </div>
         <div className="container-sg pt-12 lg:pt-16">
           <h1 className="max-w-3xl text-4xl italic sm:text-5xl lg:text-6xl">{a.heroLine}</h1>

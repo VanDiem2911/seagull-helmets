@@ -5,33 +5,43 @@ import { useEffect, useState } from 'react';
 import { useT } from './locale-provider';
 
 /**
- * Reveals every element carrying `data-reveal` (optionally "left" | "right" | "zoom") once it scrolls into view.
+ * Reveals every element carrying `data-reveal` (optionally "left" | "right" | "zoom") whenever it scrolls into view, in
+ * both directions: when it leaves the screen it goes back to its hidden state, so it plays again on the way back. Items
+ * that were scrolled past upwards wait just above their spot (`from-top`) and slide down into it when you scroll up.
  * The hidden start state only applies when the `js` class is on <html> (set by an inline script), so the page
  * is fully visible without JavaScript and for visitors who prefer reduced motion.
  */
 export function RevealObserver() {
   const pathname = usePathname();
   useEffect(() => {
+    const all = () => Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const pending = () => Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-in)'));
     if (reduce || !('IntersectionObserver' in window)) {
-      pending().forEach((el) => el.classList.add('is-in'));
+      all().forEach((el) => el.classList.add('is-in'));
       return;
     }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
+          const el = e.target as HTMLElement;
           if (e.isIntersecting) {
-            e.target.classList.add('is-in');
-            io.unobserve(e.target);
+            // enough of it is on screen (a tall block counts once ~80px of it shows)
+            if (e.intersectionRatio >= 0.1 || e.intersectionRect.height >= 80) {
+              el.classList.remove('from-top'); // its rule outranks .is-in, so drop it before revealing
+              el.classList.add('is-in');
+            }
+          } else {
+            // fully off screen: reset it, remembering which side it left through
+            el.classList.toggle('from-top', e.boundingClientRect.top < 0);
+            el.classList.remove('is-in');
           }
         }
       },
-      { threshold: 0.1, rootMargin: '0px 0px -6% 0px' },
+      { threshold: Array.from({ length: 21 }, (_, i) => i / 20), rootMargin: '0px 0px -6% 0px' },
     );
     const seen = new WeakSet<Element>();
     const watch = () =>
-      pending().forEach((el) => {
+      all().forEach((el) => {
         if (!seen.has(el)) {
           seen.add(el);
           io.observe(el);

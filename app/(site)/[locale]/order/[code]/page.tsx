@@ -10,6 +10,9 @@ import { OrderModel } from '@/lib/models';
 import { bank, site, zaloUrl } from '@/lib/site';
 import { isLocale, orderStatuses } from '@/lib/types';
 
+// a customer's own order: always rendered fresh, never cached
+export const dynamic = 'force-dynamic';
+
 type Order = {
   code: string;
   items: { slug: string; code: string; name: string; colorName: string; size: string; qty: number; price: number; image: string }[];

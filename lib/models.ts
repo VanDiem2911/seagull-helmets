@@ -41,6 +41,11 @@ const productSchema = new Schema(
   { timestamps: true },
 );
 productSchema.index({ 'name.vi': 'text', 'name.en': 'text', code: 'text', slug: 'text' });
+// compound indexes matching the catalog queries (filter on active/type/featured, then sort by sortOrder)
+productSchema.index({ active: 1, sortOrder: 1, createdAt: -1 });
+productSchema.index({ active: 1, type: 1, sortOrder: 1 });
+productSchema.index({ active: 1, featured: 1, sortOrder: 1 });
+productSchema.index({ active: 1, price: 1 });
 
 const orderItemSchema = new Schema(
   {
@@ -118,6 +123,8 @@ const articleSchema = new Schema(
   },
   { timestamps: true },
 );
+articleSchema.index({ published: 1, publishedAt: -1 });
+articleSchema.index({ published: 1, category: 1, publishedAt: -1 });
 
 const contactSchema = new Schema(
   {
@@ -140,6 +147,8 @@ const reviewSchema = new Schema(
   },
   { timestamps: true },
 );
+// product page: approved reviews of one product, newest first
+reviewSchema.index({ productSlug: 1, approved: 1, createdAt: -1 });
 
 function model<T>(name: string, schema: MongooseSchema): Model<T> {
   return (mongoose.models[name] as Model<T>) || mongoose.model<T>(name, schema);

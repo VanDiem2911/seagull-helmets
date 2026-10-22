@@ -11,6 +11,9 @@ import { pageMeta } from '@/lib/seo';
 import { site, zaloUrl } from '@/lib/site';
 import { isLocale, pick } from '@/lib/types';
 
+// reads MongoDB, so render at request time (the catalog reads themselves are cached, see lib/catalog.ts)
+export const dynamic = 'force-dynamic';
+
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -43,7 +46,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <article>
       <div className="relative h-64 w-full bg-choc sm:h-96 lg:h-[30rem]">
-        <Image src={article.cover} alt="" fill loading="eager" sizes="100vw" quality={90} className="object-cover object-[50%_30%]" />
+        <Image src={article.cover} alt="" fill loading="eager" fetchPriority="high" sizes="100vw" quality={80} className="object-cover object-[50%_30%]" />
       </div>
       <div className="container-sg pt-10 lg:pt-14">
         <Breadcrumb items={[{ label: t.nav.home, href: `/${locale}` }, { label: t.journal.title, href: `/${locale}/journal` }, { label: t.journal.categories[article.category] }]} />
@@ -57,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
           {article.body.map((b, i) => {
             if (b.kind === 'h2') return <h2 key={i}>{(locale === 'en' && b.en) || b.vi}</h2>;
             if (b.kind === 'quote') return <blockquote key={i} className="my-10 border-l-2 border-brass pl-6 font-display text-2xl italic text-choc">{(locale === 'en' && b.en) || b.vi}</blockquote>;
-            if (b.kind === 'img' && b.src) return <div key={i} className="frame -mx-0 my-10 sm:-mx-16"><div className="frame-in relative aspect-[16/10]"><Image src={b.src} alt="" fill sizes="(min-width:768px) 48rem, 100vw" className="object-cover" /></div></div>;
+            if (b.kind === 'img' && b.src) return <div key={i} className="frame -mx-0 my-10 sm:-mx-16"><div className="frame-in relative aspect-[16/10]"><Image src={b.src} alt="" fill sizes="(min-width:640px) 800px, 100vw" className="object-cover" /></div></div>;
             return <p key={i}>{(locale === 'en' && b.en) || b.vi}</p>;
           })}
           {locale === 'en' && !article.title.en && <p className="text-sm text-ink/55">{t.journal.onlyVi}</p>}
@@ -87,7 +90,7 @@ export default async function ArticlePage({ params }: Props) {
             {more.map((a) => (
               <li key={a.slug}>
                 <Link href={`/${locale}/journal/${a.slug}`} className="group block">
-                  <div className="frame"><div className="frame-in relative aspect-[4/3]"><Image src={a.cover} alt="" fill sizes="(min-width:640px) 30vw, 100vw" className="object-cover object-[50%_28%] transition duration-700 group-hover:scale-105" /></div></div>
+                  <div className="frame"><div className="frame-in relative aspect-[4/3]"><Image src={a.cover} alt="" fill sizes="(min-width:1280px) 380px, (min-width:640px) 33vw, 100vw" className="object-cover object-[50%_28%] transition duration-700 group-hover:scale-105" /></div></div>
                   <h3 className="mt-3 text-xl group-hover:text-saddle">{pick(a.title, locale)}</h3>
                 </Link>
               </li>

@@ -4,7 +4,7 @@ import { getDictionary } from '@/lib/dictionaries';
 import { money } from '@/lib/format';
 import { pick, type Locale, type Product } from '@/lib/types';
 
-export function ProductCard({ product, locale, priority = false, sizes = '(min-width:1024px) 25vw, 50vw' }: { product: Product; locale: Locale; priority?: boolean; sizes?: string }) {
+export function ProductCard({ product, locale, priority = false, sizes = '(min-width:1280px) 290px, (min-width:1024px) 25vw, 50vw' }: { product: Product; locale: Locale; priority?: boolean; sizes?: string }) {
   const t = getDictionary(locale);
   const first = product.colors[0];
   const second = product.colors[1];
@@ -16,7 +16,8 @@ export function ProductCard({ product, locale, priority = false, sizes = '(min-w
         <div className="frame">
           <div className="frame-in relative aspect-square bg-paper">
             <Image src={first.image} alt={`${name} – ${pick(first.name, locale)}`} fill sizes={sizes} loading={priority ? "eager" : undefined} className={`object-contain mix-blend-multiply transition duration-500 ${second ? 'group-hover:opacity-0' : ''}`} />
-            {second && <Image src={second.image} alt="" aria-hidden fill sizes={sizes} className="object-contain opacity-0 mix-blend-multiply transition duration-500 group-hover:opacity-100" />}
+            {/* the hover swap only exists on devices that can hover; display:none keeps touch screens from downloading it at all */}
+            {second && <Image src={second.image} alt="" aria-hidden fill sizes={sizes} className="hidden object-contain opacity-0 mix-blend-multiply transition duration-500 group-hover:opacity-100 [@media(hover:hover)]:block" />}
           </div>
         </div>
         <div className="mt-4 px-1">

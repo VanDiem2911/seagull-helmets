@@ -17,9 +17,8 @@ import '../../globals.css';
 const display = Playfair_Display({ subsets: ['latin', 'vietnamese'], variable: '--font-playfair', weight: ['400', '500', '600'], style: ['normal', 'italic'], display: 'swap' });
 const sans = Be_Vietnam_Pro({ subsets: ['latin', 'vietnamese'], variable: '--font-bevn', weight: ['300', '400', '500', '600'], display: 'swap' });
 
-// Pages read from MongoDB at request time, so don't try to prerender them at build.
-export const dynamic = 'force-dynamic';
-
+// Content pages (about, stores, policies…) are prerendered at build for both locales. Pages that read MongoDB
+// opt into request-time rendering themselves (`dynamic = 'force-dynamic'`), with their data cached in lib/catalog.ts.
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }

@@ -14,6 +14,9 @@ import { pageMeta } from '@/lib/seo';
 import { site } from '@/lib/site';
 import { isLocale, pick } from '@/lib/types';
 
+// reads MongoDB, so render at request time (the catalog reads themselves are cached, see lib/catalog.ts)
+export const dynamic = 'force-dynamic';
+
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -99,7 +102,7 @@ export default async function ProductPage({ params }: Props) {
       {product.story && (
         <section data-reveal className="container-sg mt-24 lg:mt-32">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
-            <div className="frame"><div className="frame-in relative aspect-[4/3]"><Image src={product.story.image} alt={name} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" /></div></div>
+            <div className="frame"><div className="frame-in relative aspect-[4/3]"><Image src={product.story.image} alt={name} fill sizes="(min-width:1280px) 560px, (min-width:1024px) 50vw, 100vw" className="object-cover" /></div></div>
             <div>
               <p className="label mb-4 text-saddle">No. {product.code}</p>
               <h2 className="text-3xl sm:text-4xl">{t.product.story}</h2>

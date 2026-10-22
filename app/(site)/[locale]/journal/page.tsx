@@ -11,6 +11,9 @@ import { pageMeta } from '@/lib/seo';
 import { site, zaloUrl } from '@/lib/site';
 import { isLocale, pick } from '@/lib/types';
 
+// reads MongoDB, so render at request time (the catalog reads themselves are cached, see lib/catalog.ts)
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
@@ -42,7 +45,7 @@ export default async function JournalPage({ params, searchParams }: { params: Pr
         {lead ? (
           <>
             <Link data-reveal href={`/${locale}/journal/${lead.slug}`} className="group mt-10 grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
-              <div className="frame"><div className="frame-in relative aspect-[16/10]"><Image src={lead.cover} alt="" fill loading="eager" quality={90} sizes="(min-width:1024px) 60vw, 100vw" className="object-cover object-[50%_28%] transition duration-700 group-hover:scale-105" /></div></div>
+              <div className="frame"><div className="frame-in relative aspect-[16/10]"><Image src={lead.cover} alt="" fill loading="eager" fetchPriority="high" quality={80} sizes="(min-width:1280px) 650px, (min-width:1024px) 60vw, 100vw" className="object-cover object-[50%_28%] transition duration-700 group-hover:scale-105" /></div></div>
               <div>
                 <p className="label text-saddle">{t.journal.categories[lead.category]} · {dateFmt(lead.publishedAt, locale)}</p>
                 <h2 className="mt-3 text-3xl group-hover:text-saddle sm:text-4xl">{pick(lead.title, locale)}</h2>
@@ -55,7 +58,7 @@ export default async function JournalPage({ params, searchParams }: { params: Pr
               {rest.map((a) => (
                 <li key={a.slug} data-reveal>
                   <Link href={`/${locale}/journal/${a.slug}`} className="group block">
-                    <div className="frame"><div className="frame-in relative aspect-[4/3]"><Image src={a.cover} alt="" fill sizes="(min-width:1024px) 30vw, 100vw" className="object-cover object-[50%_28%] transition duration-700 group-hover:scale-105" /></div></div>
+                    <div className="frame"><div className="frame-in relative aspect-[4/3]"><Image src={a.cover} alt="" fill sizes="(min-width:1280px) 380px, (min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw" className="object-cover object-[50%_28%] transition duration-700 group-hover:scale-105" /></div></div>
                     <p className="label mt-4 text-saddle">{t.journal.categories[a.category]} · {dateFmt(a.publishedAt, locale)}</p>
                     <h2 className="mt-2 text-2xl group-hover:text-saddle">{pick(a.title, locale)}</h2>
                     <p className="mt-2 line-clamp-3 text-sm text-ink/70">{pick(a.excerpt, locale)}</p>

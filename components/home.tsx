@@ -12,8 +12,8 @@ export function Hero({ locale }: { locale: Locale }) {
   // on phones the copy sits right under the photo instead.
   return (
     <section className="relative isolate bg-cream lg:max-h-[100svh] lg:min-h-[34rem] lg:overflow-hidden" aria-labelledby="hero-title">
-      <div className="relative aspect-[4/3] w-full sm:aspect-[16/9] lg:aspect-[1920/1000] lg:max-h-[100svh]">
-        <Image src="/images/hero-v2.webp" alt="Seagull Flying Tigers helmets" fill loading="eager" fetchPriority="high" quality={90} sizes="100vw" className="animate-hero object-cover object-[68%_center]" />
+      <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[1920/1000] lg:max-h-[100svh]">
+        <Image src="/images/hero-v2.webp" alt="Seagull Flying Tigers helmets" fill loading="eager" fetchPriority="high" quality={80} sizes="100vw" className="animate-hero object-cover object-[68%_center]" />
       </div>
       <div className="px-5 py-10 sm:px-8 lg:absolute lg:inset-0 lg:flex lg:items-center lg:p-0">
         {/* on large screens the copy stays inside the empty wall at the left of the photo, clear of the helmets */}
@@ -41,7 +41,7 @@ export function ByType({ locale }: { locale: Locale }) {
       {byType.map(({ type, image, pos }) => (
         <li key={type} data-reveal>
           <Link href={`/${locale}/products?type=${type}`} className="group relative isolate block aspect-[4/5] overflow-hidden bg-choc">
-            <Image src={image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" quality={90} className={`-z-20 object-cover transition duration-700 group-hover:scale-105 ${pos}`} />
+            <Image src={image} alt="" fill sizes="(min-width:1280px) 290px, (min-width:1024px) 25vw, 50vw" quality={80} className={`-z-20 object-cover transition duration-700 group-hover:scale-105 ${pos}`} />
             <div className="absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-gradient-to-t from-choc/70 via-choc/25 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-4 text-cream sm:p-6">
               <h3 className="text-3xl italic !text-cream sm:text-4xl">{t.types[type]}</h3>
@@ -66,7 +66,7 @@ export function ByStyle({ locale }: { locale: Locale }) {
     <div data-reveal-stagger className="grid gap-5 lg:grid-cols-3">
       {ridingStyles.map((s, i) => (
         <Link key={s} data-reveal href={`/${locale}/products?style=${s}`} className="group relative isolate block aspect-[4/3] overflow-hidden bg-choc lg:aspect-[3/4]">
-          <Image src={styleImage[s].src} alt="" fill sizes="(min-width:1024px) 33vw, 100vw" quality={90} className={`-z-20 object-cover transition duration-700 group-hover:scale-105 ${styleImage[s].pos}`} />
+          <Image src={styleImage[s].src} alt="" fill sizes="(min-width:1280px) 390px, (min-width:1024px) 33vw, 100vw" quality={80} className={`-z-20 object-cover transition duration-700 group-hover:scale-105 ${styleImage[s].pos}`} />
           <div className="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-gradient-to-t from-choc/75 via-choc/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-7 text-cream">
             <h3 className="text-4xl italic !text-cream">{t.styles[s]}</h3>
@@ -84,7 +84,7 @@ export function Story({ locale }: { locale: Locale }) {
   return (
     <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
       <div data-reveal="left" className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden lg:max-w-none">
-        <Image src="/images/photo/vespa-2.webp" alt="Seagull Helmets" fill quality={90} sizes="(min-width:1024px) 50vw, 100vw" className="object-cover object-[50%_45%]" />
+        <Image src="/images/photo/vespa-2.webp" alt="Seagull Helmets" fill quality={80} sizes="(min-width:1280px) 580px, (min-width:1024px) 50vw, 448px" className="object-cover object-[50%_45%]" />
       </div>
       <div data-reveal="right">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl">{t.home.story.title}</h2>
@@ -122,7 +122,7 @@ export function Lookbook() {
               className="relative aspect-[4/5] overflow-hidden bg-choc shadow-[0_22px_44px_-22px_rgba(74,52,38,.55)] transition-transform duration-500 md:[transform:rotate(var(--r))] md:hover:[transform:rotate(0deg)_scale(1.02)]"
               style={{ '--r': tilt[i % tilt.length] } as React.CSSProperties}
             >
-              <Image src={l.src} alt={l.cap} fill sizes="(min-width:640px) 50vw, 100vw" quality={90} className={`object-cover ${l.pos}`} />
+              <Image src={l.src} alt={l.cap} fill sizes="(min-width:1280px) 560px, (min-width:640px) 50vw, 100vw" quality={80} className={`object-cover ${l.pos}`} />
             </div>
           </li>
         );
@@ -160,7 +160,7 @@ export function Visit({ locale }: { locale: Locale }) {
   return (
     <div data-reveal className="grid overflow-hidden bg-choc text-cream lg:grid-cols-2">
       <div className="relative min-h-[22rem] lg:min-h-[30rem]">
-        <Image src="/images/photo/store-3.webp" alt="Seagull Helmets store" fill quality={90} sizes="(min-width:1024px) 50vw, 100vw" className="object-cover object-[50%_30%]" />
+        <Image src="/images/photo/store-3.webp" alt="Seagull Helmets store" fill quality={80} sizes="(min-width:1280px) 600px, (min-width:1024px) 50vw, 100vw" className="object-cover object-[50%_30%]" />
       </div>
       <div className="p-8 sm:p-12 lg:p-16">
         <h2 className="text-3xl !text-cream sm:text-4xl">{t.home.visit.title}</h2>

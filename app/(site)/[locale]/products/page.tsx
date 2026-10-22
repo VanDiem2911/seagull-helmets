@@ -11,6 +11,9 @@ import { first, withParams, type SP } from '@/lib/qs';
 import { pageMeta } from '@/lib/seo';
 import { helmetTypes, isLocale, ridingStyles, type HelmetType, type RidingStyle } from '@/lib/types';
 
+// reads MongoDB, so render at request time (the catalog reads themselves are cached, see lib/catalog.ts)
+export const dynamic = 'force-dynamic';
+
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<SP> };
 
 const typeBanner: Record<HelmetType, string> = {
@@ -62,7 +65,7 @@ export default async function ProductsPage({ params, searchParams }: Props) {
     <>
       <section>
         <div className="relative h-44 w-full bg-choc sm:h-64 lg:h-80">
-          <Image src={banner} alt="" fill loading="eager" quality={90} sizes="100vw" className="object-cover object-[50%_62%]" />
+          <Image src={banner} alt="" fill loading="eager" fetchPriority="high" quality={80} sizes="100vw" className="object-cover object-[50%_62%]" />
         </div>
         <div className="container-sg pt-10 lg:pt-14">
           <Breadcrumb items={[{ label: t.nav.home, href: `/${locale}` }, { label: t.products.title, href: heading !== t.products.title ? `/${locale}/products` : undefined }, ...(heading !== t.products.title ? [{ label: heading }] : [])]} />
@@ -93,10 +96,10 @@ export default async function ProductsPage({ params, searchParams }: Props) {
             </div>
           ) : (
             <div data-reveal-stagger className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 xl:grid-cols-3">
-              {items.map((p, i) => <ProductCard key={p.slug} product={p} locale={locale} priority={i < 3} sizes="(min-width:1280px) 28vw, 50vw" />)}
+              {items.map((p, i) => <ProductCard key={p.slug} product={p} locale={locale} priority={i < 3} sizes="(min-width:1280px) 300px, (min-width:1024px) calc(50vw - 190px), 50vw" />)}
               {items.length === perPage && (
                 <Link href={`/${locale}/journal`} className="group relative isolate col-span-full block aspect-[16/7] overflow-hidden bg-choc">
-                  <Image src="/images/rider.webp" alt="" fill sizes="80vw" className="-z-20 object-cover object-[50%_35%] transition duration-700 group-hover:scale-105" />
+                  <Image src="/images/rider.webp" alt="" fill sizes="(min-width:1280px) 930px, (min-width:1024px) calc(100vw - 350px), 100vw" className="-z-20 object-cover object-[50%_35%] transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 -z-10 bg-gradient-to-r from-choc/85 to-transparent" />
                   <div className="flex h-full flex-col justify-center p-8 sm:p-12">
                     <p className="label text-brass">Journal</p>

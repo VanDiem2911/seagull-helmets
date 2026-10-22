@@ -12,22 +12,31 @@ export function HeaderShell({ locale, children }: { locale: Locale; children: Re
   const pathname = usePathname();
   const home = pathname === `/${locale}`;
   const [top, setTop] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const bar = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const on = () => {
+    // at most one update per frame; the progress line is styled directly so scrolling doesn't re-render the header
+    let frame = 0;
+    const update = () => {
+      frame = 0;
       setTop(window.scrollY < 24);
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      if (bar.current) bar.current.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
     };
-    on();
+    const on = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener('scroll', on, { passive: true });
-    return () => window.removeEventListener('scroll', on);
+    return () => {
+      window.removeEventListener('scroll', on);
+      cancelAnimationFrame(frame);
+    };
   }, []);
   const transparent = home && top;
   return (
     <header data-transparent={transparent} className={`site-header sticky top-0 z-40 border-b transition-colors duration-300 ${home ? '-mb-14 lg:-mb-[4.25rem]' : ''} ${transparent ? 'border-transparent bg-transparent' : 'border-choc bg-choc'}`}>
       {children}
-      <div className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-[2px] origin-left bg-brass" style={{ transform: `scaleX(${progress})` }} aria-hidden />
+      <div ref={bar} className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-[2px] origin-left bg-brass" style={{ transform: 'scaleX(0)' }} aria-hidden />
     </header>
   );
 }
@@ -68,7 +77,8 @@ export function CartButton() {
   );
 }
 
-export function LangSwitch({ className = '' }: { className?: string }) {
+// `className` must carry the display utility (e.g. "inline-flex" or "hidden lg:inline-flex"): a built-in inline-flex would beat `hidden`
+export function LangSwitch({ className = 'inline-flex' }: { className?: string }) {
   const { locale } = useT();
   const pathname = usePathname();
   const router = useRouter();
@@ -79,7 +89,7 @@ export function LangSwitch({ className = '' }: { className?: string }) {
     router.push(next + window.location.search);
   };
   return (
-    <button type="button" onClick={switchTo} className={`label inline-flex items-center gap-1.5 p-2 text-choc hover:text-saddle ${className}`} aria-label={`Switch to ${other === 'en' ? 'English' : 'Tiếng Việt'}`} lang={other}>
+    <button type="button" onClick={switchTo} className={`label items-center gap-1.5 p-2 text-choc hover:text-saddle ${className}`} aria-label={`Switch to ${other === 'en' ? 'English' : 'Tiếng Việt'}`} lang={other}>
       <GlobeIcon width={16} height={16} />
       <span className={locale === 'vi' ? 'font-semibold' : 'opacity-60'}>VI</span>
       <span className="opacity-40">/</span>
@@ -151,13 +161,12 @@ export function MobileNav({ links }: { links: { href: string; label: string }[] 
             <button type="button" onClick={() => setOpen(false)} className="p-2 text-choc" aria-label={t.common.close}><CloseIcon /></button>
           </div>
           <nav className="container-sg mt-6 flex flex-col">
-            {links.map((l, i) => (
-              <Link key={l.href} href={l.href} className="flex items-baseline gap-4 border-b border-line py-5 font-display text-3xl text-choc">
-                <span className="label text-saddle">No. {String(i + 1).padStart(2, '0')}</span>
+            {links.map((l) => (
+              <Link key={l.href} href={l.href} className="block border-b border-line py-5 font-display text-3xl text-choc">
                 {l.label}
               </Link>
             ))}
-            <div className="mt-6"><LangSwitch className="-ml-2" /></div>
+            <div className="mt-6"><LangSwitch className="-ml-2 inline-flex" /></div>
           </nav>
         </div>
       )}

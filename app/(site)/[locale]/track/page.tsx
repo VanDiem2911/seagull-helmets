@@ -7,6 +7,9 @@ import { OrderModel } from '@/lib/models';
 import { first, type SP } from '@/lib/qs';
 import { isLocale } from '@/lib/types';
 
+// looks up orders in MongoDB, so render at request time
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};

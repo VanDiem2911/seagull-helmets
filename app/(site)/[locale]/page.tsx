@@ -9,14 +9,18 @@ import { getFeatured } from '@/lib/catalog';
 import { getDictionary } from '@/lib/dictionaries';
 import { isLocale } from '@/lib/types';
 
+// reads MongoDB, so render at request time (the catalog reads themselves are cached, see lib/catalog.ts)
+export const dynamic = 'force-dynamic';
+
+// the brand clip is optional: it shows up once `npm run video` has produced public/videos/reel.mp4 (checked once per server start)
+const hasReel = fs.existsSync(path.join(process.cwd(), 'public', 'videos', 'reel.mp4'));
+const hasPoster = fs.existsSync(path.join(process.cwd(), 'public', 'videos', 'reel-poster.jpg'));
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   const featured = await getFeatured(8).catch(() => []);
-  // the brand clip is optional: it shows up once `npm run video` has produced public/videos/reel.mp4
-  const hasReel = fs.existsSync(path.join(process.cwd(), 'public', 'videos', 'reel.mp4'));
-  const hasPoster = fs.existsSync(path.join(process.cwd(), 'public', 'videos', 'reel-poster.jpg'));
 
   return (
     <>

@@ -33,7 +33,7 @@ export type Quote = {
 export async function quoteCart(lines: CartLine[], locale: Locale, couponCode?: string): Promise<Quote> {
   await connectDB();
   const slugs = [...new Set(lines.map((l) => l.slug))];
-  const products = await ProductModel.find({ slug: { $in: slugs }, active: true }).lean<any[]>();
+  const products = await ProductModel.find({ slug: { $in: slugs }, active: true }).select('slug code name colors sizes price').lean<any[]>();
   const bySlug = new Map(products.map((p) => [p.slug as string, p]));
 
   const items: QuotedLine[] = [];
